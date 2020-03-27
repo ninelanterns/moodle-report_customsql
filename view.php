@@ -204,29 +204,33 @@ if (!empty($queryparams)) {
 }
 
 if (has_capability('report/customsql:definequeries', $context)) {
-    $imgedit = html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('t/edit'),
-                                'class' => 'iconsmall',
-                                'alt' => get_string('edit')));
-    $imgdelete = html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('t/delete'),
-                                  'class' => 'iconsmall',
-                                  'alt' => get_string('delete')));
-    echo html_writer::start_tag('p').
-         $OUTPUT->action_link(new moodle_url(report_customsql_url('edit.php'),
-                                             array('id' => $id)), $imgedit.' '.
-                                             get_string('editthisreport', 'report_customsql')).
-         html_writer::end_tag('p').
-         html_writer::start_tag('p').
-         $OUTPUT->action_link(new moodle_url(report_customsql_url('delete.php'),
-                                             array('id' => $id)), $imgdelete.' '.
-                                             get_string('deletethisreport', 'report_customsql')).
-         html_writer::end_tag('p');
+    $edit_url = new \moodle_url('/report/customsql/edit.php',['id' => $report->id]);
+    $edit_icon = $OUTPUT->action_icon(
+                    $edit_url,
+                    new \pix_icon('t/edit', get_string('editthisreport', 'report_customsql'), 'moodle', array('class' => 'iconsmall')),
+                    null, ['title' => get_string('editthisreport', 'report_customsql')]);
+    
+    $delete_url = new \moodle_url('/report/customsql/delete.php',['id' => $report->id]);
+    $delete_icon = $OUTPUT->action_icon(
+                    $delete_url,
+                    new \pix_icon('t/delete', get_string('deletethisreport', 'report_customsql')),
+                    new \confirm_action(get_string('deletethisreport', 'report_customsql')),
+                    ['title' => get_string('deletethisreport', 'report_customsql')]);
+    
+    echo html_writer::div($edit_icon . html_writer::link($edit_url, get_string('editthisreport', 'report_customsql')));
+    
+    echo html_writer::div($delete_icon . html_writer::link($delete_url, get_string('deletethisreport', 'report_customsql')));
 }
 
-$imglarrow = html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('t/collapsed_rtl'),
+$imglarrow = html_writer::tag('img', '', array('src' => $OUTPUT->image_url('t/collapsed_rtl', get_string('hide')),
                               'class' => 'iconsmall',
                               'alt' => ''));
-echo html_writer::start_tag('p').
-     $OUTPUT->action_link(new moodle_url(report_customsql_url('index.php')), $imglarrow.
-                                         get_string('backtoreportlist', 'report_customsql')).
-     html_writer::end_tag('p').
-     $OUTPUT->footer();
+
+$back_url =  new \moodle_url('/report/customsql/index.php');
+$back_icon = $OUTPUT->action_icon(
+                    $back_url,
+                    new \pix_icon('t/collapsed_rtl', get_string('backtoreportlist', 'report_customsql'), 'moodle', array('class' => 'iconsmall')),
+                    null, ['title' => get_string('backtoreportlist', 'report_customsql')]);
+
+echo html_writer::div($back_icon . html_writer::link($back_url, get_string('backtoreportlist', 'report_customsql')));
+$OUTPUT->footer();

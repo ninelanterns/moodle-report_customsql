@@ -308,21 +308,26 @@ function report_customsql_print_reports_for($reports, $type) {
                               array('href' => report_customsql_url('view.php?id='.$report->id))).
              ' '.report_customsql_time_note($report, 'span');
         if ($canedit) {
-            $imgedit = html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('t/edit'),
-                                                         'class' => 'iconsmall',
-                                                         'alt' => get_string('edit')));
-            $imgdelete = html_writer::tag('img', '', array('src' => $OUTPUT->pix_icon('t/delete'),
-                                                           'class' => 'iconsmall',
-                                                           'alt' => get_string('delete')));
+            $edit_url = $OUTPUT->action_icon(
+                    new \moodle_url('/report/customsql/edit.php', 
+                        ['id' => $report->id]
+                    ),
+                    new \pix_icon('t/edit', get_string('editthisreport', 'report_customsql'), 'moodle', array('class' => 'iconsmall')),
+                    null, ['title' => get_string('editthisreport', 'report_customsql')]);
+            
+            $delete_url = $OUTPUT->action_icon(
+                     new \moodle_url('/report/customsql/delete.php', 
+                        ['id' => $report->id]
+                    ),
+                    new \pix_icon('t/delete', get_string('deletethisreport', 'report_customsql')),
+                    new \confirm_action(get_string('deletethisreport', 'report_customsql')),
+                    ['title' => get_string('deletethisreport', 'report_customsql')]);
+           
+
             echo ' '.html_writer::tag('span', get_string('availableto', 'report_customsql',
                                       $capabilities[$report->capability]),
                                       array('class' => 'admin_note')).' '.
-                 html_writer::tag('a', $imgedit,
-                            array('title' => get_string('editthisreport', 'report_customsql'),
-                                  'href' => report_customsql_url('edit.php?id='.$report->id))).' '.
-                 html_writer::tag('a', $imgdelete,
-                            array('title' => get_string('deletethisreport', 'report_customsql'),
-                                  'href' => report_customsql_url('delete.php?id='.$report->id)));
+                 $edit_url . $delete_url;
         }
         echo html_writer::end_tag('p');
         echo "\n";
